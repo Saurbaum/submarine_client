@@ -11,22 +11,21 @@ namespace Submarine_Client
 		private static readonly string host = "http://localhost";
 		static void Main(string[] args)
 		{
-			var seabedRequest = WebRequest.Create(host + "/seabed");
+			var startRequest = WebRequest.Create(host + "/start");
 			var pingRequest = WebRequest.Create(host + "/ping");
 			var locationRequest = WebRequest.Create(host + "/location");
 
-			var seaBed = JsonConvert.DeserializeObject<List<Position>>(GetRequestData(seabedRequest));
+			var playerId = GetRequestData(startRequest);
+			
+			Console.WriteLine($"PlayerId = {playerId}");
 
-			foreach (var s in seaBed)
-			{
-				Console.WriteLine(s);
-			}
-			Console.WriteLine(string.Empty);
-
+			pingRequest.Headers.Add($"PlayerId:{playerId}");
 			Console.WriteLine(GetRequestData(pingRequest));
 			Console.WriteLine(string.Empty);
 
-			Console.WriteLine(JsonConvert.DeserializeObject<Position>(GetRequestData(locationRequest)));
+			locationRequest.Headers.Add($"PlayerId:{playerId}");
+			var locationData = GetRequestData(locationRequest);
+			Console.WriteLine(JsonConvert.DeserializeObject<Position>(locationData));
 			Console.WriteLine(string.Empty);
 
 			int i = 0;
